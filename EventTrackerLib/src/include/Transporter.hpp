@@ -4,5 +4,5 @@
 
 class Transporter {
 public:
-    static void send(const std::string& server_endpoint, const std::string& jsonPayload);
+    static void send(const std::string& jsonPayload);
 };

@@ -5,7 +5,7 @@
 
 #include "DeviceInfo.hpp"
 #include "DeviceInfoFlags.hpp"
-
+#include "EventQueue.hpp"
 #define DEBUG 1
 
 class EventTracker {
@@ -24,6 +24,12 @@ public:
     //Test Mode
     static void setTestMode(bool enabled);
     static bool isTestMode();
+
+    //Event Queue Functions
+    static void flush();
+    static void shutdown();
+
+    static std::string getServerEndPoint();
 private:
     static std::string _server_endpoint;
     static std::string _client_version;
@@ -35,5 +41,8 @@ private:
 
     //test mode
     static bool _testMode;
+
+    //Event Queue
+    static inline std::unique_ptr<EventQueue> _queue;
 };
 

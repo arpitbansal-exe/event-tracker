@@ -26,6 +26,7 @@ add_library(EventTracker STATIC
     src/EventBuilder.cpp
     src/Transporter.cpp
     src/DeviceInfo.cpp
+	src/EventQueue.cpp
 )
 
 target_include_directories(EventTracker PUBLIC

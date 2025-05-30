@@ -15,6 +15,8 @@ void EventTracker::init(const std::string& server_endpoint, const std::string& c
     _server_endpoint = server_endpoint;
     _client_version = client_version;
 
+    _queue = std::make_unique<EventQueue>(&Transporter::send);
+
 #ifdef DEBUG
     std::cout << "Event Tracker Init"<<std::endl;
     std::cout << "Server Endpoint: "<< _server_endpoint <<std::endl;
@@ -35,7 +37,13 @@ void EventTracker::setGlobalFields(const std::map<std::string, std::string>& gfi
 
 void EventTracker::event(const std::string& eventName, const std::map<std::string, std::string>& data) {
     auto fullPayload = EventBuilder::build(eventName, _client_version, _client_globalFields, data);
-    Transporter::send(_server_endpoint, fullPayload);
+    if (_testMode) {
+        std::cout << "[TEST MODE] Event payload:\n" << fullPayload << std::endl;
+        return;
+    }
+    else {
+        _queue->push(fullPayload);
+    }
 }
 
 void EventTracker::enableDeviceInfo(int flags) {
@@ -53,4 +61,17 @@ void EventTracker::setTestMode(bool enabled) {
 
 bool EventTracker::isTestMode() {
     return _testMode;
+}
+
+
+void EventTracker::flush() {
+    if (_queue) _queue->flush();
+}
+
+void EventTracker::shutdown() {
+    if (_queue) _queue->shutdown();
+}
+
+std::string EventTracker::getServerEndPoint() {
+    return _server_endpoint;
 }
