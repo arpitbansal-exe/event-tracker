@@ -6,7 +6,7 @@ set(BUILD_SHARED_LIBS OFF)
 set(HTTP_ONLY ON)
 set(CURL_DISABLE_LDAP ON)
 set(CURL_USE_OPENSSL OFF)
-set(CURL_USE_SCHANNEL OFF)
+set(CURL_USE_SCHANNEL ON)
 set(CURL_USE_WINSSL OFF)
 set(BUILD_CURL_EXE OFF CACHE BOOL "" FORCE)
 set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
@@ -24,7 +24,8 @@ FetchContent_MakeAvailable(curl)
 add_library(EventTracker STATIC
     src/EventTracker.cpp
     src/EventBuilder.cpp
-	src/Transporter.cpp
+    src/Transporter.cpp
+    src/DeviceInfo.cpp
 )
 
 target_include_directories(EventTracker PUBLIC

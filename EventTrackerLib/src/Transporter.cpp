@@ -1,24 +1,29 @@
 #include "Transporter.hpp"
 #include <curl/curl.h>
 #include <iostream>
+#include "EventTracker.hpp"
 
 void Transporter::send(const std::string& server_endpoint, const std::string& jsonPayload) {
-    //CURL* curl = curl_easy_init();
-    //if (curl) {
-    //    curl_easy_setopt(curl, CURLOPT_URL, server_endpoint.c_str());
-    //    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonPayload.c_str());
+    if (EventTracker::isTestMode()) {
+        std::cout << "[TEST MODE] Event payload:\n" << jsonPayload << std::endl;
+    }
+    else {
+        CURL* curl = curl_easy_init();
+        if (!curl)
+            return;
 
-    //    struct curl_slist* headers = NULL;
-    //    headers = curl_slist_append(headers, "Content-Type: application/json");
-    //    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        curl_easy_setopt(curl, CURLOPT_URL, server_endpoint.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonPayload.c_str());
 
-    //    CURLcode res = curl_easy_perform(curl);
-    //    if (res != CURLE_OK)
-    //        std::cerr << "CURL Error: " << curl_easy_strerror(res) << std::endl;
+        struct curl_slist* headers = NULL;
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
-    //    curl_slist_free_all(headers);
-    //    curl_easy_cleanup(curl);
-    //}
+        CURLcode res = curl_easy_perform(curl);
+        if (res != CURLE_OK)
+            std::cerr << "CURL Error: " << curl_easy_strerror(res) << std::endl;
 
-    std::cout << "Transportinggggg";
+        curl_slist_free_all(headers);
+        curl_easy_cleanup(curl);
+    }
 }
