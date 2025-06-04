@@ -1,8 +1,8 @@
 #pragma once
 
 #include <string>
-
+#include <vector>
 class Transporter {
 public:
-    static void send(const std::string& jsonPayload);
+    static bool send(const std::vector<std::string>& events);
 };

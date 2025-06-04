@@ -11,11 +11,11 @@ std::map<std::string, std::string> EventTracker::_client_globalFields = {};
 bool EventTracker::_testMode = false; 
 
 
-void EventTracker::init(const std::string& server_endpoint, const std::string& client_version) {
+void EventTracker::init(const std::string& server_endpoint, const std::string& client_version, QueueConfig& config) {
     _server_endpoint = server_endpoint;
     _client_version = client_version;
 
-    _queue = std::make_unique<EventQueue>(&Transporter::send);
+    _queue = std::make_unique<EventQueue>(&Transporter::send, config);
 
 #ifdef DEBUG
     std::cout << "Event Tracker Init"<<std::endl;

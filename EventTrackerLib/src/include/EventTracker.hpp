@@ -11,7 +11,7 @@
 class EventTracker {
 public:
     //Init and Global Settings
-    static void init(const std::string& server_endpoint, const std::string& client_version);
+    static void init(const std::string& server_endpoint, const std::string& client_version, QueueConfig& config);
     static void setGlobalFields(const std::map<std::string, std::string>& gfields);
     
     //Event
