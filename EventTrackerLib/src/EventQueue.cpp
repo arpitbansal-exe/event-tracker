@@ -1,5 +1,6 @@
 #include "EventQueue.hpp"
-
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 EventQueue::EventQueue(SendFunction sender, const QueueConfig& config)
     : _sender(std::move(sender)),
     _running(true),
@@ -15,7 +16,7 @@ EventQueue::~EventQueue() {
         _worker.join();
 }
 
-void EventQueue::push(const std::string& event) {
+void EventQueue::push(const json& event) {
     std::unique_lock lock(_mutex);
     if (_queue.size() >= _config.maxQueueSize) {
         if (_config.dropPolicy == DropPolicy::DROP_OLDEST) {
@@ -30,7 +31,7 @@ void EventQueue::push(const std::string& event) {
 }
 void EventQueue::worker() {
     while (_running) {
-        std::vector<std::string> batch;
+        std::vector<json> batch;
         {
             std::unique_lock lock(_mutex);
             _cv.wait(lock, [&] { return !_queue.empty() || !_running; });
@@ -47,7 +48,7 @@ void EventQueue::worker() {
     }
 }
 
-void EventQueue::processBatch(const std::vector<std::string>& batch) {
+void EventQueue::processBatch(const std::vector<json>& batch) {
     size_t attempt = 0;
     while (attempt <= _config.maxRetries) {
         bool success= _sender(batch);
@@ -62,7 +63,7 @@ void EventQueue::processBatch(const std::vector<std::string>& batch) {
 void EventQueue::flush() {
     std::unique_lock<std::mutex> lock(_mutex);
     while (!_queue.empty()) {
-        std::vector<std::string> batch;
+        std::vector<json> batch;
 
         size_t count = 0;
         while (!_queue.empty() && count < _config.batchSize) {

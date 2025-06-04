@@ -7,21 +7,23 @@
 #include <functional>
 #include <atomic>
 #include "EventTrackerConfig.hpp"
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 class EventQueue {
 public:
-    using SendFunction = std::function<bool(const std::vector<std::string>&)>;
+    using SendFunction = std::function<bool(const std::vector<json>&)>;
 
     EventQueue(SendFunction sender, const QueueConfig& config);
     ~EventQueue();
 
-    void push(const std::string& payload);
+    void push(const json & payload);
     void flush();      
     void shutdown();   
 private:
-    void processBatch(const std::vector<std::string>& batch);
+    void processBatch(const std::vector<json>& batch);
     void worker();
 
-    std::queue<std::string> _queue;
+    std::queue<json> _queue;
     std::mutex _mutex;
     std::condition_variable _cv;
     std::thread _worker;

@@ -2,8 +2,10 @@
 #include <curl/curl.h>
 #include <iostream>
 #include "EventTracker.hpp"
-
-bool Transporter::send(const std::vector<std::string>& events) {
+#include <nlohmann/json.hpp>
+#include "EventTrackerConfig.hpp"
+using json = nlohmann::json;
+bool Transporter::send(const std::vector<json>& events) {
     const std::string& server_endpoint = EventTracker::getServerEndPoint();
 
     if (server_endpoint.empty()) {
@@ -11,17 +13,11 @@ bool Transporter::send(const std::vector<std::string>& events) {
         return false;
     }
 
-    // Combine events into a single JSON array string
-    std::string jsonArray = "[";
-    for (size_t i = 0; i < events.size(); ++i) {
-        jsonArray += events[i];
-        if (i != events.size() - 1)
-            jsonArray += ",";
-    }
-    jsonArray += "]";
+    // Combine events into a single string
+    std::string payload = createEventPayload(events);
 
     if (EventTracker::isTestMode()) {
-        std::cout << "[TEST MODE] Batched Event Payload:\n" << jsonArray << std::endl;
+        std::cout << "[TEST MODE] Batched Event Payload:\n" << payload << std::endl;
         return true;
     }
 
@@ -32,7 +28,7 @@ bool Transporter::send(const std::vector<std::string>& events) {
     }
 
     curl_easy_setopt(curl, CURLOPT_URL, server_endpoint.c_str());
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonArray.c_str());
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload.c_str());
 
     struct curl_slist* headers = nullptr;
     headers = curl_slist_append(headers, "Content-Type: application/json");
@@ -47,4 +43,23 @@ bool Transporter::send(const std::vector<std::string>& events) {
     curl_slist_free_all(headers);
     curl_easy_cleanup(curl);
     return true;
+}
+
+std::string Transporter::createEventPayload(const std::vector<json>& events) {
+    try {
+        json payload = {
+            {"events", events},
+            {"device_info", EventTracker::getDeviceInfo()},
+            {"client_version", EventTracker::getClientVersion()},
+            {"event_lib_version", EVENT_TRACKER_VERSION},
+            {"global_fields", EventTracker::getGlobalFields()}
+        };
+
+        return payload.dump();
+    }
+    catch (const json::exception& e) {
+        // Log error and return empty JSON or throw
+        // Logger::error("Failed to create event payload: {}", e.what());
+        return "{}";
+    }
 }

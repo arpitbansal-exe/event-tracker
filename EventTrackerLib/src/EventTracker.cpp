@@ -3,6 +3,7 @@
 #include "Transporter.hpp"
 #include "iostream"
 #include <chrono>
+#include "EventQueue.hpp"
 
 // DEFINITIONS of static members
 std::string EventTracker::_server_endpoint = "";
@@ -25,6 +26,17 @@ void EventTracker::init(const std::string& server_endpoint, const std::string& c
 
 }
 
+void EventTracker::event(const std::string& eventName, const std::map<std::string, std::string>& data) {
+    json fullPayload = EventBuilder::build(eventName, data);
+    if (_testMode) {
+        std::cout << "[TEST MODE] Event payload:\n" << fullPayload.dump() << std::endl;
+        return;
+    }
+    else {
+        _queue->push(fullPayload);
+    }
+}
+
 void EventTracker::setGlobalFields(const std::map<std::string, std::string>& gfields) {
     _client_globalFields = gfields;
 #ifdef DEBUG
@@ -35,17 +47,9 @@ void EventTracker::setGlobalFields(const std::map<std::string, std::string>& gfi
 #endif // 
 }
 
-void EventTracker::event(const std::string& eventName, const std::map<std::string, std::string>& data) {
-    auto fullPayload = EventBuilder::build(eventName, _client_version, _client_globalFields, data);
-    if (_testMode) {
-        std::cout << "[TEST MODE] Event payload:\n" << fullPayload << std::endl;
-        return;
-    }
-    else {
-        _queue->push(fullPayload);
-    }
+std::map<std::string, std::string> EventTracker::getGlobalFields() {
+    return _client_globalFields;
 }
-
 void EventTracker::enableDeviceInfo(int flags) {
     _deviceInfoFlags = flags;
     _deviceInfo.collect(flags);
@@ -74,4 +78,7 @@ void EventTracker::shutdown() {
 
 std::string EventTracker::getServerEndPoint() {
     return _server_endpoint;
+}
+std::string EventTracker::getClientVersion() {
+    return _client_version;
 }

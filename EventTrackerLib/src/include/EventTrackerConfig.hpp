@@ -1,5 +1,7 @@
 #pragma once
 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
 //Event Tracker Library Version
 #define MAJOR_VERSION 1
 #define MINOR_VERSION 0

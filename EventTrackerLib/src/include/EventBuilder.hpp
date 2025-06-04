@@ -2,13 +2,13 @@
 
 #include <string>
 #include <map>
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 class EventBuilder {
 public:
-    static std::string build(
+    static json build(
         const std::string& eventName,
-        const std::string& version,
-        const std::map<std::string, std::string>& globals,
         const std::map<std::string, std::string>& data
     );
 };
