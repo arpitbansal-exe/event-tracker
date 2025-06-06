@@ -1,25 +1,16 @@
 # 📊 EventTracker C++ SDK
 
-A lightweight, extensible C++ library to collect, queue, and dispatch event telemetry from client applications to a remote HTTP endpoint.
+**EventTracker** is a lightweight, extensible C++ SDK designed to collect, queue, and dispatch telemetry and event data from client applications to a remote HTTP endpoint. It is designed with performance, ease-of-use, and flexibility in mind.
 
----
 
-## 🚀 Features
+## ✨ Key Features
 
-- ✅ **Asynchronous Event Tracking**  
-  Events are queued and sent in the background via a worker thread — non-blocking to your main thread.
-
-- 📦 **Built-in Device Info Collection**  
-  Optionally collect platform, device ID, RAM, and more using flag-based configuration.
-
-- 🌐 **Configurable Endpoint**  
-  Easily initialize and switch environments (e.g., dev/staging/prod).
-
-- 🧪 **Test Mode**  
-  Print payloads locally without making HTTP requests — great for debugging and development.
-
-- 🧵 **Safe Shutdown and Flush**  
-  Ensures events in the queue are delivered before exiting.
+- ✅ **Asynchronous Event Queueing** using a dedicated worker thread
+- 🧪 **Test Mode** for debugging event payloads without sending HTTP requests
+- 🧵 **Safe Shutdown and Flushing** before app termination
+- 📦 **Queue Configuration**: Custom batch sizes, retry logic, queue length, etc.
+- 📱 **Device Info** collection via flag-based configuration
+- 🔌 **Pluggable Transport Layer** to support alternate delivery mechanisms
 
 ---
 
@@ -30,24 +21,6 @@ A lightweight, extensible C++ library to collect, queue, and dispatch event tele
 ```cpp
 EventTracker::init("https://your-api.com/events", "1.0.0");
 ```
-### ⚙️ Global Fields 
-These fields will be attached to every event.
-```cpp
-EventTracker::setGlobalFields({
-    {"session_id", "abc-123"},
-    {"env", "production"}
-});
-
-```
-
-### 📱 Enable Device Info Collection
-```cpp
-EventTracker::enableDeviceInfo(DeviceInfoFlags::PLATFORM | DeviceInfoFlags::DEVICE_ID);
-```
-Choose what device data to attach using DeviceInfoFlags.
-All Flags:
-
-
 ### 📝 Track an Event
 Creates and queues an event.
 ```cpp
@@ -57,36 +30,10 @@ EventTracker::event("user_logged_in", {
 });
 ```
 
-
-### 🧪 Enable Test Mode
-Disables actual network calls. Payloads will be printed to stdout.
-```cpp
-EventTracker::setTestMode(true);
-```
-
-
-### 🚰 Flush Pending Events
-Force all events in the queue to be sent.
-```cpp
-EventTracker::flush();
-```
-
-
-### 🛑 Shutdown
-Stops the queue worker and gracefully exits. Call this before application exit to avoid losing events.
-```cpp
-EventTracker::shutdown();
-```
-
+Please refer [docs](docs/overview.md) for detailed explaination.
 
 
 ## 🛠️ Future Improvements
- - Retry Mechanism: Automatically retry failed network sends.
-
- - Batching: Send multiple events together in a single HTTP call.
-
- - Rate Limiting: Add throttling to avoid spamming endpoints.
-
  - Persistent Queue: Save events to disk and restore after crashes.
 
  - Cross-platform Support: Linux/macOS/Windows full support matrix.
