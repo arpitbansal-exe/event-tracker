@@ -28,6 +28,7 @@ public:
 
     static std::string getServerEndPoint();
     static std::string getClientVersion();
+	static QueueConfig getQueueConfig();
 private:
     static std::string _server_endpoint;
     static std::string _client_version;

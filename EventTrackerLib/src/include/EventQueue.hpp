@@ -18,7 +18,8 @@ public:
 
     void push(const json & payload);
     void flush();      
-    void shutdown();   
+    void shutdown(); 
+	QueueConfig getConfig() const { return _config; }
 private:
     void processBatch(const std::vector<json>& batch);
     void worker();

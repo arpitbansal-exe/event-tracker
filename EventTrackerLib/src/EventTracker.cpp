@@ -82,3 +82,9 @@ std::string EventTracker::getServerEndPoint() {
 std::string EventTracker::getClientVersion() {
     return _client_version;
 }
+QueueConfig EventTracker::getQueueConfig() {
+	if (!_queue) {
+		return QueueConfig();
+	}
+	return _queue->getConfig();
+}

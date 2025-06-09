@@ -19,4 +19,5 @@ struct QueueConfig {
     size_t maxRetries = 3;              // Max retry attempts
     size_t retryDelayMs = 2000;         // Delay between retries
     DropPolicy dropPolicy = DropPolicy::DROP_OLDEST;
+    std::string authToken = "default-token";
 };

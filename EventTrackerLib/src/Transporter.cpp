@@ -5,9 +5,11 @@
 #include <nlohmann/json.hpp>
 #include "EventTrackerConfig.hpp"
 using json = nlohmann::json;
+
 bool Transporter::send(const std::vector<json>& events) {
     const std::string& server_endpoint = EventTracker::getServerEndPoint();
-
+	QueueConfig queue_config = EventTracker::getQueueConfig();
+    const std::string& auth_token = queue_config.authToken;
     if (server_endpoint.empty()) {
         std::cerr << "Error: Server endpoint is empty.\n";
         return false;
@@ -33,6 +35,11 @@ bool Transporter::send(const std::vector<json>& events) {
     struct curl_slist* headers = nullptr;
     headers = curl_slist_append(headers, "Content-Type: application/json");
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+    // Add the Authorization header
+    std::string auth_header = "Authorization: Bearer ";
+    auth_header += auth_token;
+    headers = curl_slist_append(headers, auth_header.c_str());
 
     CURLcode res = curl_easy_perform(curl);
     if (res != CURLE_OK) {
