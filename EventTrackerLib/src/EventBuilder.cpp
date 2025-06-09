@@ -38,7 +38,7 @@ json EventBuilder::build(
         for (const auto& [key, value] : data) {
             event_data[key] = value;
         }
-        payload = event_data;
+        payload["data"] = event_data;
     }
     // Return compact JSON string (no pretty printing for actual payload)
     return payload;
