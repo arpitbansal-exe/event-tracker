@@ -23,13 +23,13 @@ json EventBuilder::build(
     std::tm tm_struct;
 
 #ifdef _WIN32
-    localtime_s(&tm_struct, &now_time);
+    gmtime_s(&tm_struct, &now_time); // UTC time
 #else
-    localtime_r(&now_time, &tm_struct);
+    gmtime_r(&now_time, &tm_struct); // UTC time
 #endif
 
     char buffer[32];
-    std::strftime(buffer, sizeof(buffer), "%Y-%m-%dT%H:%M:%S", &tm_struct);
+    std::strftime(buffer, sizeof(buffer), "%Y-%m-%dT%H:%M:%SZ", &tm_struct); // Z suffix = UTC
     payload["timestamp"] = buffer;
 
     // Event data as nested object
