@@ -32,8 +32,6 @@ async def flush_events_from_redis(batch_size: int = 100, interval: int = 5):
                             if isinstance(timestamp_raw, str)
                             else timestamp_raw
                         )
-                        print ("timestamp")
-                        print(timestamp )
                         values.append((
                             event["event_name"],
                             timestamp,

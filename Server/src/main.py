@@ -43,7 +43,6 @@ async def ingest_events(payload: EventBatch, _auth: None = Depends(verify_token)
                 "global_fields": payload.global_fields,
                 "device_info": payload.device_info
             }
-            print(event)
             await redis_pool.rpush("event_queue", json.dumps(event_data, default=str))   #push to redis list
     
         return {"status": "ok", "queued": len(payload.events)}
