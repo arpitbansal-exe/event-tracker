@@ -1,1 +1,4 @@
 build/
+Server/src/__pycache__/
+Server/src/utils/__pycache__/
+Server/.env
