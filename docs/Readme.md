@@ -29,20 +29,12 @@ EventTracker::event("user_logged_in", {
     {"method", "google"}
 });
 ```
+Please refer [Event Tracker Docs ](docs/EventTrackerLib) for detailed explaination.
+
 
 # 🚀 Server Infrastructure
 
 **EventTracker Server** is a high-performance event ingestion and processing system built with modern Python technologies, designed to handle high-volume telemetry data from multiple client applications.
-
-## ✨ Server Features
-
-- 🔥 **FastAPI** - High-performance async web framework
-- 📊 **Redis Queue** - Buffered event processing with background workers
-- 🕒 **TimescaleDB** - Time-series database optimized for event data
-- 📈 **Grafana Integration** - Real-time dashboards and analytics
-- 🐳 **Docker Compose** - One-command deployment
-- 🔄 **Batch Processing** - Efficient bulk database operations
-- ⚡ **Async/Await** - Non-blocking I/O for maximum throughput
 
 ## 🏗️ Server Architecture
 
@@ -62,39 +54,5 @@ EventTracker::event("user_logged_in", {
 | Analytics | Grafana |
 | Deployment | Docker Compose |
 
-## 🚀 Quick Start Server
-
-### Clone and start all services
-```bash
-git clone <repository>
-cd server
-docker-compose up -d --build
-```
-
-### Server will be available at:
-```bash
-- API: http://localhost:8000
-- API_ENDPOINT: http://localhost:8000/test
-- Grafana: http://localhost:3000
-```
-
-## 🛠️ Future Improvements
- - Persistent Queue: Save events to disk and restore after crashes.
- - Cross-platform Support: Linux/macOS/Windows full support matrix.
-
-## 🧪 Dependencies for Event Tracker
-- curl, nlohmann::json 
-- C++17 or later
-
-## 🧪 Dependencies for Sever and Analysis
-- Python, FastAPI, 
-- Redis, Grafana, Timescaledb, Docker
-
-Please refer [docs](docs) for detailed explaination.
-
-## 📄 License
-- Open to use by anyone.
-- Feedback is appreciated
-- Credits must be given if used. 
-  -- Arpit Bansal (arpitbansal.exe@gmail.com)
+Please refer [Server Docs ](docs/Server) for detailed explaination.
 
